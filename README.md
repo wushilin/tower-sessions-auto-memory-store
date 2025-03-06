@@ -5,8 +5,11 @@ A Tower Session store that is in memory, and auto evict old sessions.
 The default memory store has a few limitation:
 
 1. Deleting expired session requires custom code. This implementation is fully automated.
-2. The deletion/update is using Mutex. This code changed to RWLock, which supposed to be more performant
-3. Deleting expred session is more performant. This is implemented using VecDequeue and HashMap, so delete can be very efficient
+2. Deletion yield for other threads. It deletes maximum 10K per batch.
+   If more session to be deleted, next delete starts in 10 ms. Otherwise, next delete starts after 5 seconds.
+4. Dropping the memory store will stop the continuous deletion job.
+5. The deletion/update is using Mutex. This code changed to RWLock, which supposed to be more performant
+6. Deleting expred session is more performant. This is implemented using VecDequeue and HashMap, so delete can be very efficient
 
 
 # This should be a drop in replacement for the memory store.
